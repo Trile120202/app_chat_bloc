@@ -14,29 +14,71 @@ class ChatListItem extends StatelessWidget {
     required this.onTap,
   });
 
+  void _showDeleteDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Delete Chat'),
+          content: Text('Are you sure you want to delete chat with $name?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                // TODO: Implement delete chat logic
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Chat with $name deleted'),
+                    action: SnackBarAction(
+                      label: 'Undo',
+                      onPressed: () {
+                        // TODO: Implement undo delete
+                      },
+                    ),
+                  ),
+                );
+              },
+              child: const Text(
+                'Delete',
+                style: TextStyle(color: Colors.red),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: CircleAvatar(
-        child: Text(name[0]),
-      ),
-      title: Text(
-        name,
-        style: const TextStyle(fontWeight: FontWeight.bold),
-      ),
-      subtitle: Text(
-        lastMessage,
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-      ),
-      trailing: Text(
-        time,
-        style: TextStyle(
-          color: Theme.of(context).textTheme.bodySmall?.color,
-          fontSize: 12,
+    return InkWell(
+      onTap: onTap,
+      onLongPress: () => _showDeleteDialog(context),
+      child: ListTile(
+        leading: CircleAvatar(
+          child: Text(name[0]),
+        ),
+        title: Text(
+          name,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        subtitle: Text(
+          lastMessage,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+        trailing: Text(
+          time,
+          style: TextStyle(
+            color: Theme.of(context).textTheme.bodySmall?.color,
+            fontSize: 12,
+          ),
         ),
       ),
-      onTap: onTap,
     );
   }
 }
