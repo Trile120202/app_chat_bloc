@@ -161,6 +161,58 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
     );
   }
 
+  void _showMessageOptions(Map<String, dynamic> message, int index) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+      ),
+      builder: (BuildContext context) {
+        return Container(
+          padding: const EdgeInsets.symmetric(vertical: 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.delete_outline),
+                title: const Text('Delete for me'),
+                onTap: () {
+                  Navigator.pop(context);
+                  setState(() {
+                    _messages.removeAt(index);
+                  });
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Message deleted')),
+                  );
+                },
+              ),
+              if (message['isMe']) // Chỉ hiển thị với tin nhắn của mình
+                ListTile(
+                  leading: const Icon(Icons.restore_from_trash),
+                  title: const Text('Delete for everyone'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    setState(() {
+                      _messages[index] = {
+                        'message': 'This message was deleted',
+                        'isMe': message['isMe'],
+                        'time': message['time'],
+                        'isDeleted': true,
+                      };
+                    });
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content: Text('Message deleted for everyone')),
+                    );
+                  },
+                ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   Widget _buildOptionTile({
     required IconData icon,
     required String title,
@@ -245,9 +297,12 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
 
                 final message = _messages[index];
                 return MessageBubble(
-                  message: message['message'],
+                  message: message['isDeleted'] == true
+                      ? 'This message was deleted'
+                      : message['message'],
                   isMe: message['isMe'],
                   time: '${message['time'].hour}:${message['time'].minute}',
+                  onLongPress: () => _showMessageOptions(message, index),
                 );
               },
             ),
@@ -292,6 +347,10 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                                 'File',
                                 Colors.blue,
                               ),
+                              _buildAttachmentOption(Icons.record_voice_over,
+                                  'Record', Colors.lime),
+                              _buildAttachmentOption(
+                                  Icons.location_city, 'Location', Colors.grey),
                             ],
                           ),
                         ),
