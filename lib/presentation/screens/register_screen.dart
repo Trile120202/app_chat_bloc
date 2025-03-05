@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_text_field.dart';
-import 'chat_list_screen.dart';
+import '../widgets/success_dialog.dart';
+import 'login_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -15,10 +16,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  void _handleRegister() {
-    // Chuyển sang màn hình chính và xóa stack navigation
+  void _handleRegister() async {
+    // TODO: Thực hiện logic đăng ký thực tế ở đây
+
+    // Hiển thị dialog thành công
+    if (!mounted) return;
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const SuccessDialog(
+        title: 'Registration Successful!',
+        message:
+            'Your account has been created successfully.\nPlease login to continue.',
+        showLoading: true,
+      ),
+    );
+
+    // Đợi 3 giây rồi chuyển về màn hình login
+    await Future.delayed(const Duration(seconds: 3));
+
+    if (!mounted) return;
     Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (context) => const ChatListScreen()),
+      MaterialPageRoute(builder: (context) => const LoginScreen()),
       (route) => false,
     );
   }

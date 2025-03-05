@@ -31,6 +31,152 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
     });
   }
 
+  void _showOptions(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.7,
+        minChildSize: 0.5,
+        maxChildSize: 0.9,
+        expand: false,
+        builder: (context, scrollController) => SingleChildScrollView(
+          controller: scrollController,
+          child: Column(
+            children: [
+              // User Profile Section
+              Container(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  children: [
+                    const CircleAvatar(
+                      radius: 50,
+                      backgroundColor: Colors.blue,
+                      child: Icon(Icons.person, size: 50, color: Colors.white),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      widget.userName,
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      '+1 234 567 890',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Divider(),
+              // Chat Options
+              _buildOptionTile(
+                icon: Icons.notifications,
+                title: 'Custom Notifications',
+                onTap: () {
+                  // TODO: Implement custom notifications
+                  Navigator.pop(context);
+                },
+              ),
+              _buildOptionTile(
+                icon: Icons.lock,
+                title: 'Protected Chat',
+                onTap: () {
+                  // TODO: Implement protected chat
+                  Navigator.pop(context);
+                },
+              ),
+              _buildOptionTile(
+                icon: Icons.visibility_off,
+                title: 'Hide Chat',
+                onTap: () {
+                  // TODO: Implement hide chat
+                  Navigator.pop(context);
+                },
+              ),
+              _buildOptionTile(
+                icon: Icons.history,
+                title: 'Hide Chat History',
+                onTap: () {
+                  // TODO: Implement hide chat history
+                  Navigator.pop(context);
+                },
+              ),
+              _buildOptionTile(
+                icon: Icons.group_add,
+                title: 'Add to Group',
+                onTap: () {
+                  // TODO: Implement add to group
+                  Navigator.pop(context);
+                },
+              ),
+              _buildOptionTile(
+                icon: Icons.color_lens,
+                title: 'Custom Chat Color',
+                onTap: () {
+                  // TODO: Implement custom chat color
+                  Navigator.pop(context);
+                },
+              ),
+              _buildOptionTile(
+                icon: Icons.wallpaper,
+                title: 'Custom Background',
+                onTap: () {
+                  // TODO: Implement custom background
+                  Navigator.pop(context);
+                },
+              ),
+              const Divider(),
+              // Danger Zone
+              _buildOptionTile(
+                icon: Icons.block,
+                title: 'Block User',
+                textColor: Colors.red,
+                onTap: () {
+                  // TODO: Implement block user
+                  Navigator.pop(context);
+                },
+              ),
+              _buildOptionTile(
+                icon: Icons.delete,
+                title: 'Clear Chat',
+                textColor: Colors.red,
+                onTap: () {
+                  Navigator.pop(context);
+                  setState(() => _messages.clear());
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildOptionTile({
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+    Color? textColor,
+  }) {
+    return ListTile(
+      leading: Icon(icon, color: textColor),
+      title: Text(
+        title,
+        style: TextStyle(color: textColor),
+      ),
+      onTap: onTap,
+    );
+  }
+
   @override
   void dispose() {
     _messageController.dispose();
@@ -72,38 +218,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
           ),
           IconButton(
             icon: const Icon(Icons.more_vert),
-            onPressed: () {
-              showModalBottomSheet(
-                context: context,
-                builder: (context) => Container(
-                  padding: const EdgeInsets.symmetric(vertical: 20),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      ListTile(
-                        leading: const Icon(Icons.block),
-                        title: const Text('Block User'),
-                        onTap: () {
-                          Navigator.pop(context);
-                          // TODO: Implement block user
-                        },
-                      ),
-                      ListTile(
-                        leading: const Icon(Icons.delete, color: Colors.red),
-                        title: const Text(
-                          'Clear Chat',
-                          style: TextStyle(color: Colors.red),
-                        ),
-                        onTap: () {
-                          Navigator.pop(context);
-                          setState(() => _messages.clear());
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
+            onPressed: () => _showOptions(context),
           ),
         ],
       ),

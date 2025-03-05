@@ -3,6 +3,7 @@ import '../widgets/custom_button.dart';
 import '../widgets/custom_text_field.dart';
 import 'register_screen.dart';
 import 'home_screen.dart';
+import '../widgets/loading_overlay.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -14,8 +15,17 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  bool _isLoading = false;
 
-  void _handleLogin() {
+  void _handleLogin() async {
+    setState(() => _isLoading = true);
+
+    // Simulate network delay
+    await Future.delayed(const Duration(seconds: 2));
+
+    setState(() => _isLoading = false);
+
+    if (!mounted) return;
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (context) => const HomeScreen()),
     );
@@ -30,53 +40,58 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const SizedBox(height: 80),
-                const Text(
-                  'Welcome Back',
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center,
+    return Stack(
+      children: [
+        Scaffold(
+          body: SafeArea(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const SizedBox(height: 80),
+                    const Text(
+                      'Welcome Back',
+                      style: TextStyle(
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 48),
+                    CustomTextField(
+                      controller: _emailController,
+                      hintText: 'Email',
+                      prefixIcon: Icons.email,
+                    ),
+                    const SizedBox(height: 16),
+                    CustomTextField(
+                      controller: _passwordController,
+                      hintText: 'Password',
+                      prefixIcon: Icons.lock,
+                      isPassword: true,
+                    ),
+                    const SizedBox(height: 24),
+                    CustomButton(
+                      text: 'Login',
+                      onPressed: _handleLogin,
+                    ),
+                    const SizedBox(height: 16),
+                    TextButton(
+                      onPressed: _goToRegister,
+                      child: const Text('Don\'t have an account? Register'),
+                    ),
+                    const SizedBox(height: 24),
+                  ],
                 ),
-                const SizedBox(height: 48),
-                CustomTextField(
-                  controller: _emailController,
-                  hintText: 'Email',
-                  prefixIcon: Icons.email,
-                ),
-                const SizedBox(height: 16),
-                CustomTextField(
-                  controller: _passwordController,
-                  hintText: 'Password',
-                  prefixIcon: Icons.lock,
-                  isPassword: true,
-                ),
-                const SizedBox(height: 24),
-                CustomButton(
-                  text: 'Login',
-                  onPressed: _handleLogin,
-                ),
-                const SizedBox(height: 16),
-                TextButton(
-                  onPressed: _goToRegister,
-                  child: const Text('Don\'t have an account? Register'),
-                ),
-                const SizedBox(height: 24),
-              ],
+              ),
             ),
           ),
         ),
-      ),
+        if (_isLoading) const LoadingOverlay(),
+      ],
     );
   }
 

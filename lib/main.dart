@@ -1,4 +1,5 @@
-import 'package:app_chat/presentation/screens/login_screen.dart';
+// import 'package:app_chat/presentation/screens/login_screen.dart';
+import 'package:app_chat/presentation/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
             centerTitle: true,
             elevation: 0,
           )),
-      home: const LoginScreen(),
+      home: const SplashScreen(),
     );
   }
 }
