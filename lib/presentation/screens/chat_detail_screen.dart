@@ -1,3 +1,4 @@
+import 'package:app_chat/presentation/screens/media_detail_document.dart';
 import 'package:flutter/material.dart';
 import '../widgets/message_bubble.dart';
 
@@ -78,6 +79,21 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
               ),
               const Divider(),
               // Chat Options
+              _buildOptionTile(
+                icon: Icons.image,
+                title: "Media, Links & Documents",
+                onTap: () {
+                  Future.delayed(
+                    const Duration(seconds: 0),
+                    () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const MediaDetailScreen(),
+                      ),
+                    ),
+                  );
+                },
+              ),
               _buildOptionTile(
                 icon: Icons.notifications,
                 title: 'Custom Notifications',
